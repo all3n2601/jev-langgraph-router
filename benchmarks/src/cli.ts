@@ -5,6 +5,7 @@ import { cpus, freemem, platform, release, totalmem } from "node:os";
 import { resolve } from "node:path";
 import { pairedSummary, runBenchmark, summarize } from "./benchmark.js";
 import { dataset, routes, type Split } from "./dataset.js";
+import { loadJsonlDataset } from "./load-dataset.js";
 import { createJevProvider, createOpenAIProvider, createRuleProvider } from "./providers.js";
 
 interface CliOptions {
@@ -17,6 +18,7 @@ interface CliOptions {
   maxRequests: number;
   live: boolean;
   openaiModel?: string;
+  datasetPath?: string;
 }
 
 function parseArgs(args: readonly string[]): CliOptions {
@@ -42,6 +44,7 @@ function parseArgs(args: readonly string[]): CliOptions {
     "--timeout-ms",
     "--max-requests",
     "--openai-model",
+    "--dataset",
   ]);
   for (const key of values.keys()) if (!allowed.has(key)) throw new Error(`Unknown option: ${key}`);
   const providers = (values.get("--providers") ?? "rule").split(",");
@@ -71,6 +74,9 @@ function parseArgs(args: readonly string[]): CliOptions {
     ...(values.get("--openai-model") === undefined
       ? {}
       : { openaiModel: values.get("--openai-model") as string }),
+    ...(values.get("--dataset") === undefined
+      ? {}
+      : { datasetPath: values.get("--dataset") as string }),
   };
 }
 
@@ -80,7 +86,9 @@ function git(args: readonly string[]): string {
 
 async function main(): Promise<void> {
   const options = parseArgs(process.argv.slice(2));
-  const cases = dataset
+  const sourceDataset =
+    options.datasetPath === undefined ? dataset : await loadJsonlDataset(options.datasetPath);
+  const cases = sourceDataset
     .filter((item) => item.split === options.split)
     .sort((a, b) => Number(a.id.slice(-2)) - Number(b.id.slice(-2)))
     .slice(0, options.limit);
@@ -128,7 +136,7 @@ async function main(): Promise<void> {
   const resultDir = resolve("benchmarks/results/runs", runId);
   await mkdir(resolve("benchmarks/results/runs"), { recursive: true });
   await mkdir(resultDir, { recursive: false });
-  const datasetHash = createHash("sha256").update(JSON.stringify(dataset)).digest("hex");
+  const datasetHash = createHash("sha256").update(JSON.stringify(sourceDataset)).digest("hex");
   const selectedCasesHash = createHash("sha256").update(JSON.stringify(cases)).digest("hex");
   const lockHash = createHash("sha256")
     .update(await readFile("pnpm-lock.yaml"))
@@ -141,10 +149,10 @@ async function main(): Promise<void> {
     gitDirty: git(["status", "--porcelain"]).length > 0,
     lockfileSha256: lockHash,
     dataset: {
-      name: "synthetic-routing-v1",
+      name: options.datasetPath === undefined ? "synthetic-routing-v1" : "user-supplied-jsonl",
       sha256: datasetHash,
       selectedCasesSha256: selectedCasesHash,
-      license: "Apache-2.0",
+      license: options.datasetPath === undefined ? "Apache-2.0" : "user-supplied; unspecified",
       split: options.split,
       cases: cases.length,
       caseIds: cases.map((item) => item.id),

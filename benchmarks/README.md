@@ -34,3 +34,16 @@ The summary reports availability, accuracy, macro F1, latency percentiles (inclu
 calls), token counts, and paired case-bootstrap 95% intervals. It does not calculate cost without
 verified prices. A pilot or synthetic dataset alone cannot justify a public performance claim;
 the [methodology](../docs/BENCHMARKING.md) describes the larger release gate.
+
+To evaluate real workflows, supply your own human-reviewed JSONL file with one object per line:
+
+```json
+{"id":"ticket-001","input":"A redacted user request","label":"human","split":"test"}
+```
+
+Pass `--dataset /absolute/path/to/cases.jsonl` to the same command. The four labels must match
+the routes in `src/dataset.ts`; IDs must be unique. Keep calibration and test splits separate,
+document who labeled the cases and how disagreements were resolved, and do not include sensitive
+user data unless your organization has approved sending it to both model providers. The manifest
+records a dataset hash but not its local path or prompt text. User-supplied dataset provenance and
+license are **not verified** by the harness.

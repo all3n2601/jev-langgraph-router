@@ -39,6 +39,18 @@ importers:
         specifier: workspace:*
         version: link:../packages/typesafe
 
+  examples/langgraph-router:
+    dependencies:
+      '@langchain/langgraph':
+        specifier: 1.4.17
+        version: 1.4.17(@langchain/core@1.2.12(openai@7.22.0(undici@7.29.1)(zod@4.6.5)))(zod@4.6.5)
+      jev-langgraph-router:
+        specifier: workspace:*
+        version: link:../../packages/langgraph
+      jev-router-core:
+        specifier: workspace:*
+        version: link:../../packages/core
+
   packages/ai-sdk:
     dependencies:
       jev-router-core:

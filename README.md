@@ -3,8 +3,9 @@
 Typed, confidence-aware routing for LangGraph.js applications using Jev.
 
 > **Project status: pre-alpha.** Core, direct Jev and Gateway adapters, and a LangGraph adapter
-> pass offline tests. Direct live verification has passed; examples and reproducible benchmarks remain
-> before the first release; see [`IMPLEMENTATION_PLAN.md`](./IMPLEMENTATION_PLAN.md).
+> pass offline tests. Direct live verification and one runnable LangGraph example have passed;
+> realistic benchmarks and release checks remain before the first release. See
+> [`IMPLEMENTATION_PLAN.md`](./IMPLEMENTATION_PLAN.md).
 
 ## Why this exists
 
@@ -70,9 +71,11 @@ Requirements: Node.js 22+ and pnpm 10.
 ```sh
 pnpm install
 pnpm check
+pnpm example:langgraph
 ```
 
 See [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a change.
+The [LangGraph example](./examples/langgraph-router/README.md) runs without credentials by default.
 
 ## Documentation
 

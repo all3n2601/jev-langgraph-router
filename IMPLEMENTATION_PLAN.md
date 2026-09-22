@@ -200,6 +200,10 @@ routes remain statically checked.
 
 ### Phase 4 — examples
 
+Status: the runnable four-route LangGraph example, deterministic offline fixture, opt-in live
+mode, state projection, fallback test, and setup documentation are implemented. The AI SDK
+fast-lane example remains planned.
+
 Create two small, audited examples:
 
 - `examples/langgraph-router`: search/calculation/direct-answer/human graph with deterministic test

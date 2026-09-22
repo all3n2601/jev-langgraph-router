@@ -1,0 +1,14 @@
+{
+  "name": "jev-langgraph-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "demo": "node --import tsx src/cli.ts",
+    "typecheck": "tsc -p tsconfig.json --pretty false"
+  },
+  "dependencies": {
+    "@langchain/langgraph": "1.4.17",
+    "jev-langgraph-router": "workspace:*",
+    "jev-router-core": "workspace:*"
+  }
+}
