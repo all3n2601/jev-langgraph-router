@@ -1,0 +1,17 @@
+{
+  "name": "jev-langgraph-router",
+  "version": "0.0.0",
+  "description": "Typed, confidence-aware Jev routing for LangGraph.js.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc -p tsconfig.json --pretty false"
+  },
+  "dependencies": {
+    "jev-ai-sdk-router": "workspace:*",
+    "jev-router-core": "workspace:*"
+  }
+}

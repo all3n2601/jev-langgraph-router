@@ -1,0 +1,16 @@
+{
+  "name": "jev-ai-sdk-router",
+  "version": "0.0.0",
+  "description": "AI SDK adapter for typed Jev routing.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc -p tsconfig.json --pretty false"
+  },
+  "dependencies": {
+    "jev-router-core": "workspace:*"
+  }
+}
