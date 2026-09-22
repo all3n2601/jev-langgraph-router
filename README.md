@@ -22,8 +22,8 @@ to make applications built with LangGraph execute fewer or cheaper model operati
 | Package | Responsibility | Status |
 | --- | --- | --- |
 | `jev-router-core` | Framework-independent policies, types, thresholds, fallbacks | Foundation |
-| `jev-ai-sdk-router` | Jev evaluator built on AI SDK's evaluation API | Planned |
-| `jev-langgraph-router` | LangGraph conditional-edge adapter | Planned |
+| `jev-ai-sdk-router` | Jev evaluator built on AI SDK's evaluation API | Offline tested |
+| `jev-langgraph-router` | LangGraph conditional-edge adapter | Offline tested |
 
 ## Planned API
 
@@ -37,6 +37,7 @@ const route = createJevRouter({
     answer: "Can be answered directly",
     human: "Requires approval or presents material risk",
   },
+  selectState: (state: { message: string; customerId: string }) => ({ message: state.message }),
   minimumProbability: 0.92,
   minimumConfidence: 0.6,
   fallback: "human",
@@ -45,7 +46,8 @@ const route = createJevRouter({
 graph.addConditionalEdges("classify", route);
 ```
 
-This API is a design target, not yet a published or stable interface.
+This API is implemented but not yet published or stable. A compiled LangGraph integration test runs
+offline; the live Jev contract test is currently waiting for Gateway account verification.
 
 ## Performance standard
 

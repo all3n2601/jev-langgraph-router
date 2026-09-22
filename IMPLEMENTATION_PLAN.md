@@ -153,7 +153,8 @@ in an ADR.
 
 Status: in progress. The offline adapter, AI SDK mock integration, response validation, timeout,
 cancellation, retry pass-through, and opt-in bounded live smoke-test entry point are implemented.
-Executing and recording the live contract fixture remains.
+Executing and recording the live contract fixture remains. The initial call reached AI Gateway but
+received `403 customer_verification_required` until the Gateway account has a valid card on file.
 
 Tasks:
 
@@ -171,6 +172,10 @@ Exit gate: all contract tests pass offline; one opt-in live smoke test is docume
 credentials and application state.
 
 ### Phase 3 — `jev-langgraph-router`
+
+Status: in progress. The conditional-edge adapter, state projection, decision observer, and real
+compiled-graph test are implemented. Compatibility testing across the supported LangGraph range
+and consumer-package verification remain.
 
 Tasks:
 
