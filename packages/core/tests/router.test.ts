@@ -48,6 +48,21 @@ describe("createRouter", () => {
     });
   });
 
+  it.each([Number.NaN, -0.1, 1.1])(
+    "rejects the invalid provider confidence %s",
+    async (confidence) => {
+      const evaluate = vi.fn().mockResolvedValue({ route: "answer", confidence });
+      const route = createRouter({ routes, evaluator: { evaluate }, fallback: "human" });
+
+      await expect(route({})).resolves.toMatchObject({
+        route: "human",
+        confidence: 0,
+        accepted: false,
+        reason: "invalid-result",
+      });
+    },
+  );
+
   it("uses the fallback when the evaluator fails", async () => {
     const evaluate = vi.fn().mockRejectedValue(new TypeError("network failure"));
     const route = createRouter({ routes, evaluator: { evaluate }, fallback: "human" });
@@ -60,14 +75,44 @@ describe("createRouter", () => {
     });
   });
 
-  it("rejects invalid thresholds at construction", () => {
+  it("labels a non-Error evaluator rejection", async () => {
+    const evaluate = vi.fn().mockRejectedValue("provider unavailable");
+    const route = createRouter({ routes, evaluator: { evaluate }, fallback: "human" });
+
+    await expect(route({}, new AbortController().signal)).resolves.toMatchObject({
+      reason: "evaluator-failed",
+      metadata: { errorName: "UnknownError" },
+    });
+  });
+
+  it("forwards an abort signal and rethrows an aborted evaluation", async () => {
+    const controller = new AbortController();
+    controller.abort(new Error("cancelled"));
+    const evaluate = vi.fn().mockRejectedValue(controller.signal.reason);
+    const route = createRouter({ routes, evaluator: { evaluate }, fallback: "human" });
+
+    await expect(route({}, controller.signal)).rejects.toThrow("cancelled");
+    expect(evaluate).toHaveBeenCalledWith(expect.objectContaining({ signal: controller.signal }));
+  });
+
+  it.each([Number.NaN, -0.1, 1.1])("rejects the invalid threshold %s", (confidenceThreshold) => {
     expect(() =>
       createRouter({
         routes,
         evaluator: { evaluate: vi.fn() },
-        confidenceThreshold: 1.1,
+        confidenceThreshold,
         fallback: "human",
       }),
     ).toThrow(InvalidRouterConfigurationError);
+  });
+
+  it("rejects an undeclared fallback at runtime", () => {
+    expect(() =>
+      createRouter({
+        routes,
+        evaluator: { evaluate: vi.fn() },
+        fallback: "delete" as never,
+      }),
+    ).toThrow("fallback must be a declared route");
   });
 });
