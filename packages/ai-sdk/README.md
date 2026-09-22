@@ -31,7 +31,8 @@ the end-to-end timeout surrounding all attempts.
 ## Live contract smoke test
 
 Normal tests are offline. To make one bounded Jev call through AI Gateway, configure either
-`AI_GATEWAY_API_KEY` or a current Vercel OIDC token, then explicitly enable the live test:
+`AI_GATEWAY_API_KEY` or `VERCEL_OIDC_TOKEN` in the ignored root `.env` file, then explicitly enable
+the live test. An API key is sufficient; an OIDC token is optional and expires after 12 hours.
 
 ```sh
 RUN_LIVE_JEV=1 pnpm test:live

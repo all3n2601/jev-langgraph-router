@@ -17,7 +17,7 @@
     "lint": "biome lint .",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:live": "vitest run packages/ai-sdk/tests/live",
+    "test:live": "node --env-file=.env ./node_modules/vitest/vitest.mjs run packages/ai-sdk/tests/live",
     "test:watch": "vitest",
     "typecheck": "pnpm --filter jev-router-core build && pnpm --recursive --if-present typecheck"
   },
