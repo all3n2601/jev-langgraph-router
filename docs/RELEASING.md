@@ -4,6 +4,7 @@
 2. Run `pnpm check` from a clean checkout.
 3. Build every package and inspect generated declarations and source maps.
 4. Pack every publishable package and install it in a clean consumer fixture.
+   The automated `pnpm verify:packages` check covers tarball contents and an ESM import smoke test.
 5. Verify package contents, license, README, exports, peer dependencies, and provenance settings.
 6. Merge an approved Changeset version pull request.
 7. Publish from protected CI using npm trusted publishing and provenance.
