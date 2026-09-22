@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" role="img" aria-labelledby="title desc">
+  <title id="title">Exploratory synthetic routing comparison</title>
+  <desc id="desc">Jev had 175 millisecond median and 266 millisecond p95 latency versus OpenAI at 866 and 1613 milliseconds. Jev chose 79 of 80 routes correctly, OpenAI and fixed rules 75 of 80. Jev missed one human-review case.</desc>
+  <style>
+    text { font-family: system-ui, -apple-system, sans-serif; fill: #172033; font-size: 15px; }
+    .title { font-size: 23px; font-weight: 700; }
+    .subtitle { fill: #536074; font-size: 13px; }
+    .heading { font-size: 17px; font-weight: 650; }
+    .grid { stroke: #d8dde5; stroke-width: 1; }
+    .jev { fill: #167a72; }
+    .openai { fill: #4473bc; }
+    .rule { fill: #b46f3c; }
+    .value { font-size: 13px; font-variant-numeric: tabular-nums; }
+  </style>
+  <rect width="900" height="620" fill="#ffffff"/>
+  <text x="36" y="44" class="title">Routing comparison · 80 synthetic cases</text>
+  <text x="36" y="66" class="subtitle">One request per case and provider · exploratory, not a production performance claim</text>
+  <rect x="36" y="88" width="12" height="12" class="jev"/><text x="56" y="99" class="value">Jev</text>
+  <rect x="126" y="88" width="12" height="12" class="openai"/><text x="146" y="99" class="value">OpenAI LLM</text>
+  <rect x="270" y="88" width="12" height="12" class="rule"/><text x="290" y="99" class="value">Fixed rules</text>
+
+  <text x="36" y="143" class="heading">Observed latency per request</text>
+  <text x="36" y="164" class="subtitle">Milliseconds · bars share a 0–1,800 ms scale</text>
+  <line x1="185" y1="181" x2="185" y2="330" class="grid"/>
+  <line x1="314" y1="181" x2="314" y2="330" class="grid"/>
+  <line x1="443" y1="181" x2="443" y2="330" class="grid"/>
+  <line x1="572" y1="181" x2="572" y2="330" class="grid"/>
+  <line x1="650" y1="181" x2="650" y2="330" class="grid"/>
+  <text x="185" y="347" class="subtitle">0</text><text x="301" y="347" class="subtitle">500</text>
+  <text x="426" y="347" class="subtitle">1,000</text><text x="555" y="347" class="subtitle">1,500</text>
+  <text x="84" y="213">Median</text>
+  <rect x="185" y="193" width="45" height="15" class="jev"/><text x="670" y="206" class="value">Jev 175 ms</text>
+  <rect x="185" y="218" width="224" height="15" class="openai"/><text x="670" y="231" class="value">LLM 866 ms</text>
+  <text x="84" y="286">p95</text>
+  <rect x="185" y="266" width="69" height="15" class="jev"/><text x="670" y="279" class="value">Jev 266 ms</text>
+  <rect x="185" y="291" width="417" height="15" class="openai"/><text x="670" y="304" class="value">LLM 1,613 ms</text>
+  <text x="185" y="371" class="subtitle">Fixed rules: 0.008 ms median, omitted from this model-call scale.</text>
+
+  <text x="36" y="417" class="heading">Correct next-route choices</text>
+  <text x="36" y="438" class="subtitle">Number correct out of 80 · Jev's one miss required human review</text>
+  <line x1="185" y1="455" x2="185" y2="551" class="grid"/>
+  <line x1="418" y1="455" x2="418" y2="551" class="grid"/>
+  <line x1="650" y1="455" x2="650" y2="551" class="grid"/>
+  <rect x="185" y="462" width="459" height="17" class="jev"/><text x="670" y="476" class="value">Jev 79/80</text>
+  <rect x="185" y="492" width="436" height="17" class="openai"/><text x="670" y="506" class="value">LLM 75/80</text>
+  <rect x="185" y="522" width="436" height="17" class="rule"/><text x="670" y="536" class="value">Rules 75/80</text>
+  <text x="181" y="567" class="subtitle">0</text><text x="407" y="567" class="subtitle">40</text><text x="639" y="567" class="subtitle">80</text>
+  <text x="36" y="601" class="subtitle">Raw observations, protocol, and safety caveat: benchmarks/results/runs/2026-09-22T19-20-57-184Z-52346/</text>
+</svg>
