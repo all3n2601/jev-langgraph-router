@@ -61,3 +61,34 @@ The finalizer refuses incomplete reviews and writes an ignored `cases.jsonl` for
 `pnpm benchmark --dataset ... --routes benchmarks/datasets/postpurchase-support-v1/routes.json`.
 Neither preparation nor finalization overwrites an existing output. Retain the source
 revision, review records, agreement rate, and rubric version with any report.
+
+## Optional Claude draft reviewers
+
+Two blind Claude labeling packets can be prepared locally with:
+
+```sh
+pnpm dataset:bitext:agents:prepare
+```
+
+Each packet contains only request IDs and text, in a different order, plus the same
+[frozen agent rubric](./AGENT_LABELING.md). Neither packet contains Bitext intents,
+calibration/test splits, the other agent's labels, or router predictions. Separate
+tool-free Claude sessions can fill `agent-a/labels.jsonl` and `agent-b/labels.jsonl`.
+The supplied runner does this in batches of 20, with a per-call budget cap:
+
+```sh
+pnpm dataset:bitext:agents:run-a
+pnpm dataset:bitext:agents:run-b
+pnpm dataset:bitext:agents:merge
+```
+
+The runner uses the local Claude Code login. If it reports an expired OAuth session, run
+`claude auth login` interactively and retry each unfinished agent; completed batches are
+kept for resumption. Do not paste a credential into this repository or chat.
+
+The merge writes `disagreements.md`/`.jsonl` and a broader `review-required.md`/`.jsonl`
+covering disagreements, uncertainty, and every proposed human route. It **does not** fill
+`review.jsonl`, create benchmark ground truth, or authorize a human-validated claim.
+Claude-to-Claude agreement is not routing accuracy. Human review is still necessary,
+especially for safety cases. Keep the locally generated packets and labels out of the
+public software repository unless their dataset-license obligations are handled separately.
