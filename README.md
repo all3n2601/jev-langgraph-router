@@ -60,6 +60,8 @@ hardware, raw samples, warm-up policy, number of repetitions, accuracy definitio
 intervals, and commands needed to reproduce it. See [`docs/BENCHMARKING.md`](./docs/BENCHMARKING.md).
 An initial paired pilot harness and synthetic dataset are in [`benchmarks/`](./benchmarks/README.md);
 small pilot numbers must not be generalized to production workloads.
+The [first paired pilot](./benchmarks/results/runs/2026-09-22T18-59-43-489Z-44225/README.md)
+includes its raw samples and manifest and is explicitly exploratory.
 
 ## Development
 

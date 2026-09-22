@@ -1,0 +1,62 @@
+{
+  "runId": "2026-09-22T18-59-43-489Z-44225",
+  "startedAt": "2026-09-22T18:59:29.157Z",
+  "finishedAt": "2026-09-22T18:59:43.479Z",
+  "gitCommit": "64bbc785221523c5c2822e1fbdbb6c4e9656f180",
+  "gitDirty": false,
+  "lockfileSha256": "394748ca991d31de2398af1c366614f06c999acd514ef5fa822a3f58e12365f6",
+  "dataset": {
+    "name": "synthetic-routing-v1",
+    "sha256": "6ce2828f1382b3a9c58a18eac4e05906f78bfc97004ffa43da156d276580fefe",
+    "selectedCasesSha256": "8cb18e8f8fbbf5bc5364562f7ec7d69118ce4a9c9794ba070842f22b5735df54",
+    "license": "Apache-2.0",
+    "split": "test",
+    "cases": 8,
+    "caseIds": [
+      "answer-06",
+      "search-06",
+      "calculate-06",
+      "human-06",
+      "answer-07",
+      "search-07",
+      "calculate-07",
+      "human-07"
+    ]
+  },
+  "runtime": {
+    "node": "v25.2.1",
+    "platform": "darwin",
+    "osRelease": "27.0.0",
+    "cpu": "Apple M4 Pro",
+    "logicalCpus": 14,
+    "totalMemoryBytes": 25769803776,
+    "freeMemoryBytesAtReport": 84344832,
+    "region": "unspecified"
+  },
+  "configuration": {
+    "providers": [
+      "jev",
+      "openai"
+    ],
+    "openaiModelRequested": "gpt-4o-mini",
+    "routes": {
+      "answer": "Answer from stable general knowledge without external information or calculation.",
+      "search": "Find current, external, or account-specific information before answering.",
+      "calculate": "Perform arithmetic or a deterministic numerical computation before answering.",
+      "human": "Require human approval, professional judgment, or review of a high-stakes decision."
+    },
+    "repetitions": 1,
+    "warmups": 0,
+    "timeoutMs": 15000,
+    "maxRequests": 16,
+    "concurrency": 1,
+    "order": "provider order alternates by case index and repetition",
+    "retries": 0
+  },
+  "interpretation": {
+    "exploratory": true,
+    "protocolRepetitionGateMet": false,
+    "publicPerformanceClaimEligible": false,
+    "note": "Synthetic examples cannot establish real-world accuracy. Costs are not calculated without verified pricing."
+  }
+}

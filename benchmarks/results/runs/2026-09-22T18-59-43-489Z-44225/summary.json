@@ -1,0 +1,48 @@
+{
+  "summary": {
+    "jev": {
+      "samples": 8,
+      "successes": 8,
+      "accuracy": 1,
+      "macroF1": 1,
+      "p50Ms": 272.0130420000005,
+      "p95Ms": 452.49279099999967,
+      "p99Ms": 452.49279099999967,
+      "meanInputTokens": 388.75,
+      "meanOutputTokens": 45,
+      "modelIds": [
+        "jev-1.13.0"
+      ]
+    },
+    "openai": {
+      "samples": 8,
+      "successes": 8,
+      "accuracy": 0.875,
+      "macroF1": 0.8666666666666667,
+      "p50Ms": 1045.3911249999999,
+      "p95Ms": 3201.103792,
+      "p99Ms": 3201.103792,
+      "meanInputTokens": 128.875,
+      "meanOutputTokens": 6,
+      "modelIds": [
+        "gpt-4o-mini-2024-07-18"
+      ]
+    }
+  },
+  "comparison": {
+    "compared": [
+      "jev",
+      "openai"
+    ],
+    "meanLatencyDifferenceMs": -1152.7662451249998,
+    "latencyDifference95CiMs": [
+      -1749.4661931249998,
+      -640.3400208750002
+    ],
+    "accuracyDifference": 0.125,
+    "accuracyDifference95Ci": [
+      0,
+      0.375
+    ]
+  }
+}
