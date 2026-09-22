@@ -160,8 +160,8 @@ Executing and recording the live contract fixture remains. The initial call reac
 received `403 customer_verification_required` until the Gateway account has a valid card on file.
 
 The direct `jev-typesafe-router` package now provides the default transport, using the official
-SDK and `TYPESAFE_API_KEY`. Its offline contract tests pass; a live check still requires a fresh
-key and must not use any credential pasted into chat. AI Gateway remains an optional adapter.
+SDK and `TYPESAFE_API_KEY`. Its offline contract tests and one bounded live smoke test passed on
+2026-09-22. No credential is recorded in the repository. AI Gateway remains an optional adapter.
 
 Tasks:
 

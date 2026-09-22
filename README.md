@@ -3,7 +3,7 @@
 Typed, confidence-aware routing for LangGraph.js applications using Jev.
 
 > **Project status: pre-alpha.** Core, direct Jev and Gateway adapters, and a LangGraph adapter
-> pass offline tests. Live direct verification, examples, and reproducible benchmarks remain
+> pass offline tests. Direct live verification has passed; examples and reproducible benchmarks remain
 > before the first release; see [`IMPLEMENTATION_PLAN.md`](./IMPLEMENTATION_PLAN.md).
 
 ## Why this exists
