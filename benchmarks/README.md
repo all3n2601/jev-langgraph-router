@@ -50,6 +50,11 @@ license are **not verified** by the harness.
 Use the [human-labeling protocol](./datasets/HUMAN_LABELING_PROTOCOL.md) to define a target
 workflow, split cases, adjudicate labels, and set the safety gate before live evaluation.
 The first proposed real workflow is [post-purchase support](./datasets/postpurchase-support-v1/PLAN.md).
+To test an external but still synthetic source first, prepare the
+[Bitext retail/e-commerce review set](./datasets/bitext-retail-ecommerce-v1/CARD.md) with
+`pnpm dataset:bitext`. It is not scored until two independent reviewers finish route labels
+and `pnpm dataset:bitext:finalize` produces benchmark cases. The dataset lacks arithmetic
+requests, so it cannot test the `calculate` route.
 For user-supplied data, `--limit` takes cases in file order; randomize that order with a recorded
 seed before running a capped subset.
 Use `--routes /absolute/path/to/routes.json` to provide the same frozen, workflow-specific route
