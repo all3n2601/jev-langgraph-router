@@ -58,6 +58,8 @@ then run `RUN_LIVE_TYPESAFE=1 pnpm test:live`. Never commit or paste a key into 
 Every performance statement must publish the dataset, exact dependency versions, runtime and
 hardware, raw samples, warm-up policy, number of repetitions, accuracy definition, confidence
 intervals, and commands needed to reproduce it. See [`docs/BENCHMARKING.md`](./docs/BENCHMARKING.md).
+An initial paired pilot harness and synthetic dataset are in [`benchmarks/`](./benchmarks/README.md);
+small pilot numbers must not be generalized to production workloads.
 
 ## Development
 

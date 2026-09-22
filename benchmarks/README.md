@@ -1,7 +1,36 @@
 # Benchmarks
 
-This directory will contain the reproducible benchmark harness, redistributable datasets, baseline
-routers, and result manifests described in `docs/BENCHMARKING.md`.
+The benchmark harness compares direct Jev, an OpenAI structured-output LLM router, and a fixed
+rule baseline on the same labeled prompts. It writes a manifest, raw JSONL samples, and an
+aggregate summary for every run. Ordinary tests use fake providers and never make API calls.
 
-No benchmark result exists yet. Do not make performance claims until the methodology and held-out
-evaluation are implemented.
+The [synthetic v1 dataset](./datasets/synthetic-routing-v1/CARD.md) has 100 original prompts:
+20 calibration and 80 held-out test cases, balanced across four routes. It is a harness and
+sanity-check dataset, not evidence of production routing quality.
+
+First, run without credentials:
+
+```sh
+pnpm benchmark:offline --providers rule --limit 8
+```
+
+For a small paired live pilot, place `TYPESAFE_API_KEY` and `OPENAI_API_KEY` in the ignored root
+`.env` file, then run:
+
+```sh
+pnpm benchmark --providers jev,openai --openai-model gpt-4o-mini --limit 8 --max-requests 16 --live
+```
+
+The LLM baseline uses the [OpenAI Responses API's strict JSON Schema
+output](https://developers.openai.com/api/docs/guides/structured-outputs). Pass a model available
+to your account with structured-output support; the script requires an explicit model ID. API
+calls are sequential, retries are disabled, and the command refuses to exceed the stated live
+request cap. Default runs select held-out cases in balanced round-robin order. Set `--split
+calibration` only for tuning; never tune on held-out results. Run IDs and full outputs are in
+`benchmarks/results/runs/`, which is ignored by Git so raw reports and local metadata are not
+committed accidentally.
+
+The summary reports availability, accuracy, macro F1, latency percentiles (including failed
+calls), token counts, and paired case-bootstrap 95% intervals. It does not calculate cost without
+verified prices. A pilot or synthetic dataset alone cannot justify a public performance claim;
+the [methodology](../docs/BENCHMARKING.md) describes the larger release gate.

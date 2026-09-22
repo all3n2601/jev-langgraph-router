@@ -1,0 +1,8 @@
+{
+  "name": "jev-benchmarks",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "jev-typesafe-router": "workspace:*"
+  }
+}

@@ -212,6 +212,11 @@ test mode that runs without credentials.
 
 ### Phase 5 — benchmark suite
 
+Status: first vertical slice implemented. A 100-case, four-route synthetic dataset, fixed rule
+baseline, direct Jev provider, OpenAI structured-output baseline, capped CLI, raw result manifest,
+offline harness tests, and a small paired live pilot exist. The realistic human-labeled dataset,
+full repetitions, verified cost model, calibration study, and public claim gate remain open.
+
 Baselines:
 
 1. deterministic keyword/rule router;
@@ -339,7 +344,7 @@ Before `0.1.0`:
 
 1. Complete and test the first `jev-router-core` acceptance-policy vertical slice.
 2. Add ADR-0003 after inspecting the live AI SDK evaluation response and public types.
-3. Create a 100-case synthetic dataset and label schema.
+3. Create a 100-case synthetic dataset and label schema. **Done.**
 4. Implement the injected AI SDK evaluator with recorded fixtures.
 5. Compile a minimal four-node LangGraph integration against the adapter.
 

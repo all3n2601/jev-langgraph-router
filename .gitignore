@@ -12,4 +12,5 @@ coverage/
 
 # Generated benchmark artifacts. Curated result summaries may be force-added.
 benchmarks/results/raw/
+benchmarks/results/runs/
 benchmarks/results/*.tmp
