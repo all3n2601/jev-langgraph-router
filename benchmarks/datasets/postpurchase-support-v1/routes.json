@@ -1,0 +1,6 @@
+{
+  "answer": "Explain a frozen, locally available post-purchase policy or FAQ without changing an order or needing live records.",
+  "search": "Retrieve live order, shipment, inventory, or updated policy information before answering.",
+  "calculate": "Compute a deterministic refund, price, tax, or quantity result when all required values and policy rules are already supplied.",
+  "human": "Request human approval or expert review before a refund, account change, policy exception, fraud-sensitive action, or irreversible decision."
+}

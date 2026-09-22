@@ -47,3 +47,10 @@ document who labeled the cases and how disagreements were resolved, and do not i
 user data unless your organization has approved sending it to both model providers. The manifest
 records a dataset hash but not its local path or prompt text. User-supplied dataset provenance and
 license are **not verified** by the harness.
+Use the [human-labeling protocol](./datasets/HUMAN_LABELING_PROTOCOL.md) to define a target
+workflow, split cases, adjudicate labels, and set the safety gate before live evaluation.
+The first proposed real workflow is [post-purchase support](./datasets/postpurchase-support-v1/PLAN.md).
+For user-supplied data, `--limit` takes cases in file order; randomize that order with a recorded
+seed before running a capped subset.
+Use `--routes /absolute/path/to/routes.json` to provide the same frozen, workflow-specific route
+descriptions to Jev and the LLM. The file must contain exactly the four supported route keys.

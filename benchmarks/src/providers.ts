@@ -1,14 +1,17 @@
 import OpenAI from "openai";
 import { createTypeSafeEvaluator } from "jev-typesafe-router";
 import type { Provider } from "./benchmark.js";
-import { routes, type Route } from "./dataset.js";
+import { routes, type BenchmarkRouteMap, type Route } from "./dataset.js";
 
-export function createJevProvider(timeoutMs: number): Provider {
+export function createJevProvider(
+  timeoutMs: number,
+  routeMap: BenchmarkRouteMap = routes,
+): Provider {
   const evaluator = createTypeSafeEvaluator({ timeoutMs, maxRetries: 0 });
   return {
     name: "jev",
     async evaluate(input, signal) {
-      const result = await evaluator.evaluate({ state: input, routes, signal });
+      const result = await evaluator.evaluate({ state: input, routes: routeMap, signal });
       return {
         route: result.route,
         ...(result.confidence === undefined ? {} : { confidence: result.confidence }),
@@ -28,12 +31,13 @@ export function createOpenAIProvider(
   model: string,
   timeoutMs: number,
   client: OpenAI = new OpenAI({ maxRetries: 0 }),
+  routeMap: BenchmarkRouteMap = routes,
 ): Provider {
   if (model.trim().length === 0) throw new Error("An explicit OpenAI model ID is required");
   const routeNames = Object.keys(routes) as Route[];
   const instructions = [
     "Select exactly one next step for this request. Return only the route field.",
-    ...routeNames.map((route) => `${route}: ${routes[route]}`),
+    ...routeNames.map((route) => `${route}: ${routeMap[route]}`),
   ].join("\n");
 
   return {

@@ -6,6 +6,7 @@ export const routes = {
 } as const;
 
 export type Route = keyof typeof routes;
+export type BenchmarkRouteMap = Readonly<Record<Route, string>>;
 export type Split = "calibration" | "test";
 
 export interface BenchmarkCase {

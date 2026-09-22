@@ -6,6 +6,7 @@ import { resolve } from "node:path";
 import { pairedSummary, runBenchmark, summarize } from "./benchmark.js";
 import { dataset, routes, type Split } from "./dataset.js";
 import { loadJsonlDataset } from "./load-dataset.js";
+import { loadRouteMap } from "./load-routes.js";
 import { createJevProvider, createOpenAIProvider, createRuleProvider } from "./providers.js";
 
 interface CliOptions {
@@ -19,6 +20,7 @@ interface CliOptions {
   live: boolean;
   openaiModel?: string;
   datasetPath?: string;
+  routesPath?: string;
 }
 
 function parseArgs(args: readonly string[]): CliOptions {
@@ -45,6 +47,7 @@ function parseArgs(args: readonly string[]): CliOptions {
     "--max-requests",
     "--openai-model",
     "--dataset",
+    "--routes",
   ]);
   for (const key of values.keys()) if (!allowed.has(key)) throw new Error(`Unknown option: ${key}`);
   const providers = (values.get("--providers") ?? "rule").split(",");
@@ -77,6 +80,9 @@ function parseArgs(args: readonly string[]): CliOptions {
     ...(values.get("--dataset") === undefined
       ? {}
       : { datasetPath: values.get("--dataset") as string }),
+    ...(values.get("--routes") === undefined
+      ? {}
+      : { routesPath: values.get("--routes") as string }),
   };
 }
 
@@ -88,10 +94,16 @@ async function main(): Promise<void> {
   const options = parseArgs(process.argv.slice(2));
   const sourceDataset =
     options.datasetPath === undefined ? dataset : await loadJsonlDataset(options.datasetPath);
-  const cases = sourceDataset
-    .filter((item) => item.split === options.split)
-    .sort((a, b) => Number(a.id.slice(-2)) - Number(b.id.slice(-2)))
-    .slice(0, options.limit);
+  const routeMap =
+    options.routesPath === undefined ? routes : await loadRouteMap(options.routesPath);
+  const eligibleCases = sourceDataset.filter((item) => item.split === options.split);
+  // Only the built-in class-grouped fixture needs round-robin selection. Preserve the
+  // documented source order of user-supplied data instead of sorting arbitrary IDs.
+  const cases = (
+    options.datasetPath === undefined
+      ? eligibleCases.sort((a, b) => Number(a.id.slice(-2)) - Number(b.id.slice(-2)))
+      : eligibleCases
+  ).slice(0, options.limit);
   const liveProviders = options.providers.filter((name) => name !== "rule");
   const plannedRequests =
     liveProviders.length * (cases.length * options.repetitions + options.warmups);
@@ -110,11 +122,11 @@ async function main(): Promise<void> {
   }
 
   const providers = options.providers.map((name) => {
-    if (name === "jev") return createJevProvider(options.timeoutMs);
+    if (name === "jev") return createJevProvider(options.timeoutMs, routeMap);
     if (name === "openai") {
       const model = options.openaiModel;
       if (model === undefined) throw new Error("Missing OpenAI model");
-      return createOpenAIProvider(model, options.timeoutMs);
+      return createOpenAIProvider(model, options.timeoutMs, undefined, routeMap);
     }
     return createRuleProvider();
   });
@@ -170,7 +182,7 @@ async function main(): Promise<void> {
     configuration: {
       providers: options.providers,
       openaiModelRequested: options.openaiModel ?? null,
-      routes,
+      routes: routeMap,
       repetitions: options.repetitions,
       warmups: options.warmups,
       timeoutMs: options.timeoutMs,
