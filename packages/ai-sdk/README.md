@@ -27,3 +27,16 @@ The adapter keeps the selected route's probability separate from TypeSafe's opti
 statistic. Missing distributions and malformed or undeclared routes are rejected locally. AI SDK
 owns transient retry behavior; `maxRetries` is passed through unchanged, while this adapter owns
 the end-to-end timeout surrounding all attempts.
+
+## Live contract smoke test
+
+Normal tests are offline. To make one bounded Jev call through AI Gateway, configure either
+`AI_GATEWAY_API_KEY` or a current Vercel OIDC token, then explicitly enable the live test:
+
+```sh
+RUN_LIVE_JEV=1 pnpm test:live
+```
+
+The smoke test has a 15-second deadline, one retry, one choice question, no generated output, and
+requests Gateway zero-data-retention mode. It validates the response contract rather than asserting
+that a probabilistic model must select one specific route.

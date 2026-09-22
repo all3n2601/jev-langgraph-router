@@ -152,8 +152,8 @@ in an ADR.
 ### Phase 2 — `jev-ai-sdk-router`
 
 Status: in progress. The offline adapter, AI SDK mock integration, response validation, timeout,
-cancellation, and retry pass-through are implemented. The opt-in live smoke test and recorded live
-contract fixture remain.
+cancellation, retry pass-through, and opt-in bounded live smoke-test entry point are implemented.
+Executing and recording the live contract fixture remains.
 
 Tasks:
 
