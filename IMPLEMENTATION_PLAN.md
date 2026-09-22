@@ -151,6 +151,10 @@ in an ADR.
 
 ### Phase 2 — `jev-ai-sdk-router`
 
+Status: in progress. The offline adapter, AI SDK mock integration, response validation, timeout,
+cancellation, and retry pass-through are implemented. The opt-in live smoke test and recorded live
+contract fixture remain.
+
 Tasks:
 
 1. Pin the minimum compatible AI SDK major version as a peer dependency.

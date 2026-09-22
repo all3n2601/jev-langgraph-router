@@ -9,23 +9,23 @@ const routes = {
 
 describe("createRouter", () => {
   it("returns an accepted declared route above the threshold", async () => {
-    const evaluate = vi.fn().mockResolvedValue({ route: "search", confidence: 0.95 });
+    const evaluate = vi.fn().mockResolvedValue({ route: "search", probability: 0.95 });
     const route = createRouter({ routes, evaluator: { evaluate }, fallback: "human" });
 
     await expect(route({ query: "latest news" })).resolves.toEqual({
       route: "search",
-      confidence: 0.95,
+      probability: 0.95,
       accepted: true,
       reason: "accepted",
     });
   });
 
-  it("uses the fallback below the threshold and preserves the evaluated route", async () => {
-    const evaluate = vi.fn().mockResolvedValue({ route: "answer", confidence: 0.6 });
+  it("uses the fallback below the probability threshold and preserves the route", async () => {
+    const evaluate = vi.fn().mockResolvedValue({ route: "answer", probability: 0.6 });
     const route = createRouter({
       routes,
       evaluator: { evaluate },
-      confidenceThreshold: 0.8,
+      minimumProbability: 0.8,
       fallback: "human",
     });
 
@@ -33,12 +33,12 @@ describe("createRouter", () => {
       route: "human",
       evaluatedRoute: "answer",
       accepted: false,
-      reason: "low-confidence",
+      reason: "low-probability",
     });
   });
 
   it("rejects provider routes outside the declaration", async () => {
-    const evaluate = vi.fn().mockResolvedValue({ route: "delete", confidence: 1 });
+    const evaluate = vi.fn().mockResolvedValue({ route: "delete", probability: 1 });
     const route = createRouter({ routes, evaluator: { evaluate }, fallback: "human" });
 
     await expect(route({})).resolves.toMatchObject({
@@ -49,19 +49,65 @@ describe("createRouter", () => {
   });
 
   it.each([Number.NaN, -0.1, 1.1])(
-    "rejects the invalid provider confidence %s",
-    async (confidence) => {
-      const evaluate = vi.fn().mockResolvedValue({ route: "answer", confidence });
+    "rejects the invalid provider probability %s",
+    async (probability) => {
+      const evaluate = vi.fn().mockResolvedValue({ route: "answer", probability });
       const route = createRouter({ routes, evaluator: { evaluate }, fallback: "human" });
 
       await expect(route({})).resolves.toMatchObject({
         route: "human",
-        confidence: 0,
+        probability: 0,
         accepted: false,
         reason: "invalid-result",
       });
     },
   );
+
+  it.each([Number.NaN, -0.1, 1.1])(
+    "rejects the invalid provider confidence %s",
+    async (confidence) => {
+      const evaluate = vi.fn().mockResolvedValue({ route: "answer", probability: 1, confidence });
+      const route = createRouter({ routes, evaluator: { evaluate }, fallback: "human" });
+
+      await expect(route({})).resolves.toMatchObject({
+        route: "human",
+        probability: 0,
+        accepted: false,
+        reason: "invalid-result",
+      });
+    },
+  );
+
+  it("applies a provider-confidence threshold independently", async () => {
+    const evaluate = vi
+      .fn()
+      .mockResolvedValue({ route: "answer", probability: 0.99, confidence: 0.4 });
+    const route = createRouter({
+      routes,
+      evaluator: { evaluate },
+      minimumProbability: 0.9,
+      minimumConfidence: 0.6,
+      fallback: "human",
+    });
+
+    await expect(route({})).resolves.toMatchObject({
+      route: "human",
+      evaluatedRoute: "answer",
+      reason: "low-confidence",
+    });
+  });
+
+  it("falls back when required provider confidence is absent", async () => {
+    const evaluate = vi.fn().mockResolvedValue({ route: "answer", probability: 0.99 });
+    const route = createRouter({
+      routes,
+      evaluator: { evaluate },
+      minimumConfidence: 0.6,
+      fallback: "human",
+    });
+
+    await expect(route({})).resolves.toMatchObject({ reason: "low-confidence" });
+  });
 
   it("uses the fallback when the evaluator fails", async () => {
     const evaluate = vi.fn().mockRejectedValue(new TypeError("network failure"));
@@ -95,16 +141,33 @@ describe("createRouter", () => {
     expect(evaluate).toHaveBeenCalledWith(expect.objectContaining({ signal: controller.signal }));
   });
 
-  it.each([Number.NaN, -0.1, 1.1])("rejects the invalid threshold %s", (confidenceThreshold) => {
-    expect(() =>
-      createRouter({
-        routes,
-        evaluator: { evaluate: vi.fn() },
-        confidenceThreshold,
-        fallback: "human",
-      }),
-    ).toThrow(InvalidRouterConfigurationError);
-  });
+  it.each([Number.NaN, -0.1, 1.1])(
+    "rejects the invalid probability threshold %s",
+    (minimumProbability) => {
+      expect(() =>
+        createRouter({
+          routes,
+          evaluator: { evaluate: vi.fn() },
+          minimumProbability,
+          fallback: "human",
+        }),
+      ).toThrow(InvalidRouterConfigurationError);
+    },
+  );
+
+  it.each([Number.NaN, -0.1, 1.1])(
+    "rejects the invalid confidence threshold %s",
+    (minimumConfidence) => {
+      expect(() =>
+        createRouter({
+          routes,
+          evaluator: { evaluate: vi.fn() },
+          minimumConfidence,
+          fallback: "human",
+        }),
+      ).toThrow(InvalidRouterConfigurationError);
+    },
+  );
 
   it("rejects an undeclared fallback at runtime", () => {
     expect(() =>

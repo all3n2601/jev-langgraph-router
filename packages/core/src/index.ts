@@ -8,7 +8,10 @@ export interface EvaluationRequest<State, Route extends string> {
 
 export interface EvaluationResult<Route extends string> {
   readonly route: Route;
-  readonly confidence: number;
+  /** Probability assigned to the selected route. */
+  readonly probability: number;
+  /** Optional provider-specific concentration/confidence statistic. */
+  readonly confidence?: number;
   readonly probabilities?: Readonly<Partial<Record<Route, number>>>;
   readonly durationMs?: number;
   readonly metadata?: Readonly<Record<string, unknown>>;
@@ -21,13 +24,19 @@ export interface DecisionEvaluator<State, Route extends string> {
 export interface RouteDecision<Route extends string> extends EvaluationResult<Route> {
   readonly accepted: boolean;
   readonly evaluatedRoute?: Route;
-  readonly reason: "accepted" | "low-confidence" | "invalid-result" | "evaluator-failed";
+  readonly reason:
+    | "accepted"
+    | "low-probability"
+    | "low-confidence"
+    | "invalid-result"
+    | "evaluator-failed";
 }
 
 export interface RouterOptions<State, Route extends string> {
   readonly routes: RouteMap<Route>;
   readonly evaluator: DecisionEvaluator<State, Route>;
-  readonly confidenceThreshold?: number;
+  readonly minimumProbability?: number;
+  readonly minimumConfidence?: number;
   readonly fallback: Route;
 }
 
@@ -38,11 +47,19 @@ export class InvalidRouterConfigurationError extends Error {
 export function createRouter<State, const Route extends string>(
   options: RouterOptions<State, Route>,
 ): (state: State, signal?: AbortSignal) => Promise<RouteDecision<Route>> {
-  const threshold = options.confidenceThreshold ?? 0.9;
+  const minimumProbability = options.minimumProbability ?? 0.9;
+  const minimumConfidence = options.minimumConfidence;
   const routeNames = new Set(Object.keys(options.routes));
 
-  if (!Number.isFinite(threshold) || threshold < 0 || threshold > 1) {
-    throw new InvalidRouterConfigurationError("confidenceThreshold must be between 0 and 1");
+  if (!Number.isFinite(minimumProbability) || minimumProbability < 0 || minimumProbability > 1) {
+    throw new InvalidRouterConfigurationError("minimumProbability must be between 0 and 1");
+  }
+
+  if (
+    minimumConfidence !== undefined &&
+    (!Number.isFinite(minimumConfidence) || minimumConfidence < 0 || minimumConfidence > 1)
+  ) {
+    throw new InvalidRouterConfigurationError("minimumConfidence must be between 0 and 1");
   }
 
   if (!routeNames.has(options.fallback)) {
@@ -58,19 +75,35 @@ export function createRouter<State, const Route extends string>(
       });
 
       const validRoute = routeNames.has(result.route);
+      const validProbability =
+        Number.isFinite(result.probability) && result.probability >= 0 && result.probability <= 1;
       const validConfidence =
-        Number.isFinite(result.confidence) && result.confidence >= 0 && result.confidence <= 1;
+        result.confidence === undefined ||
+        (Number.isFinite(result.confidence) && result.confidence >= 0 && result.confidence <= 1);
 
-      if (!validRoute || !validConfidence) {
+      if (!validRoute || !validProbability || !validConfidence) {
         return {
           route: options.fallback,
-          confidence: 0,
+          probability: 0,
           accepted: false,
           reason: "invalid-result",
         };
       }
 
-      if (result.confidence < threshold) {
+      if (result.probability < minimumProbability) {
+        return {
+          ...result,
+          route: options.fallback,
+          evaluatedRoute: result.route,
+          accepted: false,
+          reason: "low-probability",
+        };
+      }
+
+      if (
+        minimumConfidence !== undefined &&
+        (result.confidence === undefined || result.confidence < minimumConfidence)
+      ) {
         return {
           ...result,
           route: options.fallback,
@@ -88,7 +121,7 @@ export function createRouter<State, const Route extends string>(
 
       return {
         route: options.fallback,
-        confidence: 0,
+        probability: 0,
         accepted: false,
         reason: "evaluator-failed",
         metadata: { errorName: error instanceof Error ? error.name : "UnknownError" },

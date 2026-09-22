@@ -37,7 +37,8 @@ const route = createJevRouter({
     answer: "Can be answered directly",
     human: "Requires approval or presents material risk",
   },
-  confidenceThreshold: 0.92,
+  minimumProbability: 0.92,
+  minimumConfidence: 0.6,
   fallback: "human",
 });
 

@@ -18,7 +18,7 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
-    "typecheck": "pnpm --recursive --if-present typecheck"
+    "typecheck": "pnpm --filter jev-router-core build && pnpm --recursive --if-present typecheck"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.4",
