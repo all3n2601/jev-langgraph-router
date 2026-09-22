@@ -44,3 +44,8 @@ const graph = new StateGraph(State)
 fallback route must be one of the declared routes. A caller may inject an evaluator to run graph
 tests without network access. `onDecision` can record the final decision without receiving graph
 state; observer errors do not affect routing.
+
+The default evaluator uses the direct TypeSafe SDK and reads `TYPESAFE_API_KEY` from the
+environment. Pass `typesafe: { timeoutMs: 5000, maxRetries: 0 }` for transport settings. The
+AI Gateway adapter remains optional: inject `evaluator: createJevEvaluator()` from
+`jev-ai-sdk-router` if your application already uses AI SDK Gateway.

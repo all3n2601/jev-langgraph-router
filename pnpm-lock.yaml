@@ -41,12 +41,12 @@ importers:
 
   packages/langgraph:
     dependencies:
-      jev-ai-sdk-router:
-        specifier: workspace:*
-        version: link:../ai-sdk
       jev-router-core:
         specifier: workspace:*
         version: link:../core
+      jev-typesafe-router:
+        specifier: workspace:*
+        version: link:../typesafe
     devDependencies:
       '@langchain/core':
         specifier: 1.2.12
@@ -57,6 +57,16 @@ importers:
       zod:
         specifier: 4.6.5
         version: 4.6.5
+
+  packages/typesafe:
+    dependencies:
+      jev-router-core:
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@typesafe-ai/sdk':
+        specifier: 0.6.0
+        version: 0.6.0
 
 packages:
 
@@ -607,6 +617,10 @@ packages:
 
   '@types/node@24.13.6':
     resolution: {integrity: sha512-SGrw/h3KPFshy3OE6ZL53LMBG5vGQQ8/gIpiqz/kRZhPJ7HgwCEs8LBuNtWLa8dvGZVpSF7+Bf+c11HUrCb/yg==}
+
+  '@typesafe-ai/sdk@0.6.0':
+    resolution: {integrity: sha512-IddX+Q0XM+VagOUZFeP7wZjaO4SHMdvnh2zEBdrZZnXedWI3BNK1lKhMx3ayrkFWvVLbVcUHJy6AVZlY+e6Jaw==}
+    engines: {node: '>=20'}
 
   '@vercel/oidc@3.2.0':
     resolution: {integrity: sha512-UycprH3T6n3jH0k44NHMa7pnFHGu/N05MjojYr+Mc6I7obkoLIJujSWwin1pCvdy/eOxrI/l3uDLQsmcrOb4ug==}
@@ -1885,6 +1899,8 @@ snapshots:
   '@types/node@24.13.6':
     dependencies:
       undici-types: 7.18.2
+
+  '@typesafe-ai/sdk@0.6.0': {}
 
   '@vercel/oidc@3.2.0': {}
 

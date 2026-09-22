@@ -2,10 +2,9 @@
 
 Typed, confidence-aware routing for LangGraph.js applications using Jev.
 
-> **Project status: pre-alpha.** The architecture and core routing contract are in place. The
-> live Jev adapter, LangGraph adapter, examples, and reproducible benchmarks are planned and must
-> meet the acceptance gates in [`IMPLEMENTATION_PLAN.md`](./IMPLEMENTATION_PLAN.md) before the
-> first release.
+> **Project status: pre-alpha.** Core, direct Jev and Gateway adapters, and a LangGraph adapter
+> pass offline tests. Live direct verification, examples, and reproducible benchmarks remain
+> before the first release; see [`IMPLEMENTATION_PLAN.md`](./IMPLEMENTATION_PLAN.md).
 
 ## Why this exists
 
@@ -17,11 +16,12 @@ latency and cost without unacceptable loss of routing accuracy.
 The claim is deliberately narrow: this package does not make LangGraph internals faster. It aims
 to make applications built with LangGraph execute fewer or cheaper model operations.
 
-## Intended packages
+## Packages
 
 | Package | Responsibility | Status |
 | --- | --- | --- |
 | `jev-router-core` | Framework-independent policies, types, thresholds, fallbacks | Foundation |
+| `jev-typesafe-router` | Direct Jev evaluator using the official TypeSafe SDK | Offline tested |
 | `jev-ai-sdk-router` | Jev evaluator built on AI SDK's evaluation API | Offline tested |
 | `jev-langgraph-router` | LangGraph conditional-edge adapter | Offline tested |
 
@@ -46,8 +46,12 @@ const route = createJevRouter({
 graph.addConditionalEdges("classify", route);
 ```
 
-This API is implemented but not yet published or stable. A compiled LangGraph integration test runs
-offline; the live Jev contract test is currently waiting for Gateway account verification.
+This API defaults to the direct TypeSafe SDK but is not yet published or stable. A compiled
+LangGraph integration test runs offline. To use AI Gateway instead, inject
+`evaluator: createJevEvaluator()` from `jev-ai-sdk-router`.
+
+For one direct live smoke test, save a fresh `TYPESAFE_API_KEY` in the ignored root `.env` file,
+then run `RUN_LIVE_TYPESAFE=1 pnpm test:live`. Never commit or paste a key into chat.
 
 ## Performance standard
 

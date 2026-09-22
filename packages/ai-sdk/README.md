@@ -35,7 +35,7 @@ Normal tests are offline. To make one bounded Jev call through AI Gateway, confi
 the live test. An API key is sufficient; an OIDC token is optional and expires after 12 hours.
 
 ```sh
-RUN_LIVE_JEV=1 pnpm test:live
+RUN_LIVE_JEV=1 pnpm test:live:gateway
 ```
 
 The smoke test has a 15-second deadline, one retry, one choice question, no generated output, and

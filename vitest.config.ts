@@ -8,6 +8,9 @@ export default defineConfig({
       "jev-ai-sdk-router": fileURLToPath(
         new URL("./packages/ai-sdk/src/index.ts", import.meta.url),
       ),
+      "jev-typesafe-router": fileURLToPath(
+        new URL("./packages/typesafe/src/index.ts", import.meta.url),
+      ),
     },
   },
   test: {
@@ -16,6 +19,7 @@ export default defineConfig({
       include: [
         "packages/core/src/**/*.ts",
         "packages/ai-sdk/src/**/*.ts",
+        "packages/typesafe/src/**/*.ts",
         "packages/langgraph/src/**/*.ts",
       ],
       exclude: ["**/dist/**"],

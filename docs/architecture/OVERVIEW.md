@@ -24,10 +24,10 @@ LangGraph adapter --- translates graph inputs/outputs only
 core router --------- validation, acceptance, fallback, telemetry
       |
       v
-AI SDK adapter ------ request mapping, transport, response normalization
+direct TypeSafe SDK adapter (default) or AI SDK Gateway adapter (optional)
       |
       v
-Jev via AI Gateway
+Jev
 ```
 
 No package may reach across these boundaries to import an internal module from another package.

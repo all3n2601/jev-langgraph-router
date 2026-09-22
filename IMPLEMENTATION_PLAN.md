@@ -5,7 +5,7 @@
 `jev-langgraph-router` is a TypeScript companion library for LangGraph.js. It converts application
 state into a typed route decision using Jev, applies a local confidence and validity policy, and
 returns a LangGraph-compatible conditional-edge value. The repository also contains a reusable
-core and an AI SDK adapter so routing policy is not coupled to LangGraph.
+core and provider adapters so routing policy is not coupled to LangGraph or one transport.
 
 ### Primary user
 
@@ -40,7 +40,8 @@ The first stable release must:
 .
 ├── packages/
 │   ├── core/       # Pure routing policy; no provider or framework dependency
-│   ├── ai-sdk/     # Jev evaluation and response normalization
+│   ├── typesafe/   # Direct official SDK and response normalization
+│   ├── ai-sdk/     # Optional AI Gateway transport
 │   └── langgraph/  # Conditional-edge adapter and LangGraph types
 ├── benchmarks/     # Datasets, runners, baselines, statistics, result manifests
 ├── examples/       # Minimal runnable integrations
@@ -53,7 +54,8 @@ The first stable release must:
 Dependency direction is one-way:
 
 ```text
-jev-router-core <- jev-ai-sdk-router <- jev-langgraph-router
+jev-router-core <- jev-typesafe-router <- jev-langgraph-router
+                <- jev-ai-sdk-router (optional injected evaluator)
 ```
 
 `core` must remain usable with a fake evaluator, direct TypeSafe client, or another future
@@ -66,10 +68,11 @@ forbidden. Examples and benchmarks are consumers and may not be imported by pack
 
 1. The LangGraph adapter receives graph state.
 2. A caller-supplied projector produces the smallest evaluation state necessary for routing.
-3. The AI SDK adapter converts declared routes into one Jev choice question.
+3. The direct TypeSafe adapter converts declared routes into one Jev choice question. The
+   optional AI SDK adapter performs the same task through AI Gateway.
 4. The adapter sends a bounded request with timeout and retry settings.
-5. The response normalizer extracts the selected route, confidence, probabilities, request data,
-   model identifier, and warnings when available.
+5. The response normalizer extracts the selected route, confidence, probabilities, token usage,
+   and model identifier when available.
 6. Core validates that the route is declared and the confidence is finite and in `[0, 1]`.
 7. Core applies the configured acceptance policy.
 8. The accepted route or deterministic fallback is returned to LangGraph.
@@ -155,6 +158,10 @@ Status: in progress. The offline adapter, AI SDK mock integration, response vali
 cancellation, retry pass-through, and opt-in bounded live smoke-test entry point are implemented.
 Executing and recording the live contract fixture remains. The initial call reached AI Gateway but
 received `403 customer_verification_required` until the Gateway account has a valid card on file.
+
+The direct `jev-typesafe-router` package now provides the default transport, using the official
+SDK and `TYPESAFE_API_KEY`. Its offline contract tests pass; a live check still requires a fresh
+key and must not use any credential pasted into chat. AI Gateway remains an optional adapter.
 
 Tasks:
 

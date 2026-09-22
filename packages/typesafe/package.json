@@ -1,7 +1,7 @@
 {
-  "name": "jev-langgraph-router",
+  "name": "jev-typesafe-router",
   "version": "0.0.0",
-  "description": "Typed, confidence-aware Jev routing for LangGraph.js.",
+  "description": "Direct TypeSafe Jev adapter for typed routing.",
   "license": "Apache-2.0",
   "type": "module",
   "private": true,
@@ -25,15 +25,12 @@
     "typecheck": "tsc -p tsconfig.json --pretty false"
   },
   "dependencies": {
-    "jev-typesafe-router": "workspace:*",
     "jev-router-core": "workspace:*"
   },
   "peerDependencies": {
-    "@langchain/langgraph": ">=1.4.17 <2"
+    "@typesafe-ai/sdk": ">=0.6.0 <1"
   },
   "devDependencies": {
-    "@langchain/core": "1.2.12",
-    "@langchain/langgraph": "1.4.17",
-    "zod": "4.6.5"
+    "@typesafe-ai/sdk": "0.6.0"
   }
 }

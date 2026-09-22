@@ -81,28 +81,27 @@ describe("createJevRouter", () => {
     await expect(router({ message: "Hello", secret: "private" }, {})).resolves.toBe("answer");
   });
 
-  it("passes Jev options to the default AI SDK evaluator", async () => {
-    const evaluate = vi.fn().mockResolvedValue({
+  it("passes options to the default direct TypeSafe evaluator", async () => {
+    const systemOne = vi.fn().mockResolvedValue({
       answers: {
         route: {
           type: "choice",
           choice: "answer",
+          confidence: 0.9,
           probabilities: { answer: 0.98, search: 0.01, human: 0.01 },
         },
       },
-      providerMetadata: { typesafe: { confidence: { route: 0.9 } } },
-      usage: { inputTokens: 10, outputTokens: 0, totalTokens: 10 },
-      warnings: [],
-      response: { modelId: "jev-mock", timestamp: new Date() },
+      usage: { input_tokens: 10, output_tokens: 0 },
+      model: "jev-mock",
     });
     const router = createJevRouter({
       routes,
       selectState: (state: State) => state.message,
-      jev: { evaluate },
+      typesafe: { systemOne },
       fallback: "human",
     });
 
     await expect(router({ message: "Hello", secret: "private" }, {})).resolves.toBe("answer");
-    expect(evaluate).toHaveBeenCalledOnce();
+    expect(systemOne).toHaveBeenCalledOnce();
   });
 });
