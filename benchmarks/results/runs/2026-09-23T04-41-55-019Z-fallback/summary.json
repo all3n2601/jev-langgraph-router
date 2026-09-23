@@ -1,0 +1,14 @@
+{
+  "status": "Exploratory full-graph evaluation against AI-assisted provisional labels",
+  "cases": 96,
+  "successfulGraphs": 96,
+  "provisionalAgreement": 62,
+  "provisionalHumanCases": 24,
+  "humanSelected": 24,
+  "nonHumanSelectedForHuman": 0,
+  "probabilityThreshold": 0.8,
+  "confidenceThreshold": 0.6,
+  "datasetSha256": "8187338b07949842cf4f12e07325aa39f968aa1b53e1cd10cd1603ba45b6dfa3",
+  "routesSha256": "324809f837324c7396a375021df0ec6935f5e23e593360234d3c225f80869693",
+  "caveat": "Labels are AI-assisted provisional, not human-validated. One graph call per case; SDK may retry. Do not tune thresholds on this test split."
+}

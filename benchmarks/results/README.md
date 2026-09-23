@@ -14,3 +14,7 @@ The [2026-09-23 Bitext comparison](./runs/2026-09-23T04-34-32-912Z-86396/README.
 uses external hybrid-synthetic requests with **AI-assisted provisional labels**.
 It includes raw observations and a chart, but 41 flags remain unreviewed and
 human-route misses prevent any product-readiness claim.
+
+The [2026-09-23 full-graph safety evaluation](./runs/2026-09-23T04-41-55-019Z-fallback/README.md)
+tests the existing human fallback on the same provisional external set. It
+caught all provisional human-route cases but sent many other cases to review.
