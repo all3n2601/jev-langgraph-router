@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 540" role="img" aria-labelledby="title desc">
+  <title id="title">Provisional Bitext routing comparison</title>
+  <desc id="desc">On 96 hybrid-synthetic held-out cases with AI-assisted labels, Jev matched 78 labels at 186 milliseconds median latency; OpenAI matched 63 at 657 milliseconds. Jev missed 8 of 24 provisionally labeled human-review cases. These are not human-validated accuracy results.</desc>
+  <style>
+    text { font-family: system-ui, -apple-system, sans-serif; fill: #172033; font-size: 15px; }
+    .title { font-size: 23px; font-weight: 700; }
+    .subtitle { fill: #536074; font-size: 13px; }
+    .heading { font-size: 17px; font-weight: 650; }
+    .grid { stroke: #d8dde5; stroke-width: 1; }
+    .jev { fill: #167a72; }
+    .openai { fill: #4473bc; }
+    .rule { fill: #b46f3c; }
+    .warning { fill: #a02828; font-size: 14px; font-weight: 650; }
+    .value { font-size: 13px; font-variant-numeric: tabular-nums; }
+  </style>
+  <rect width="900" height="540" fill="#ffffff"/>
+  <text x="36" y="44" class="title">Routing comparison · 96 Bitext cases</text>
+  <text x="36" y="66" class="subtitle">Hybrid-synthetic requests · AI-assisted provisional labels · not a product accuracy claim</text>
+  <rect x="36" y="85" width="12" height="12" class="jev"/><text x="56" y="96" class="value">Jev</text>
+  <rect x="126" y="85" width="12" height="12" class="openai"/><text x="146" y="96" class="value">OpenAI LLM</text>
+  <rect x="270" y="85" width="12" height="12" class="rule"/><text x="290" y="96" class="value">Fixed rules</text>
+
+  <text x="36" y="140" class="heading">Median observed response time</text>
+  <text x="36" y="162" class="subtitle">Milliseconds · model calls shown on a 0–700 ms scale</text>
+  <line x1="185" y1="177" x2="185" y2="258" class="grid"/>
+  <line x1="315" y1="177" x2="315" y2="258" class="grid"/>
+  <line x1="445" y1="177" x2="445" y2="258" class="grid"/>
+  <line x1="575" y1="177" x2="575" y2="258" class="grid"/>
+  <rect x="185" y="188" width="104" height="18" class="jev"/><text x="670" y="203" class="value">Jev 186 ms</text>
+  <rect x="185" y="222" width="366" height="18" class="openai"/><text x="670" y="237" class="value">LLM 657 ms</text>
+  <text x="182" y="274" class="subtitle">0</text><text x="304" y="274" class="subtitle">250</text><text x="434" y="274" class="subtitle">500</text><text x="564" y="274" class="subtitle">700</text>
+  <text x="185" y="296" class="subtitle">Rules: 0.012 ms median, omitted from the model-call scale.</text>
+
+  <text x="36" y="337" class="heading">Choices matching provisional labels</text>
+  <text x="36" y="359" class="subtitle">Out of 96 cases · not human-validated ground truth</text>
+  <line x1="185" y1="374" x2="185" y2="471" class="grid"/>
+  <line x1="418" y1="374" x2="418" y2="471" class="grid"/>
+  <line x1="650" y1="374" x2="650" y2="471" class="grid"/>
+  <rect x="185" y="382" width="378" height="17" class="jev"/><text x="670" y="396" class="value">Jev 78/96</text>
+  <rect x="185" y="412" width="305" height="17" class="openai"/><text x="670" y="426" class="value">LLM 63/96</text>
+  <rect x="185" y="442" width="213" height="17" class="rule"/><text x="670" y="456" class="value">Rules 44/96</text>
+  <text x="181" y="486" class="subtitle">0</text><text x="407" y="486" class="subtitle">48</text><text x="639" y="486" class="subtitle">96</text>
+  <text x="36" y="520" class="warning">Safety blocker: Jev missed 8/24 provisional human-review cases.</text>
+</svg>
