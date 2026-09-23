@@ -21,6 +21,7 @@
     "dataset:bitext:agents:provisional": "node --import tsx benchmarks/src/bitext-agent-cli.ts provisional",
     "example:langgraph": "pnpm --filter jev-langgraph-example demo",
     "example:langgraph:live": "node --env-file=.env --import tsx examples/langgraph-router/src/cli.ts --live",
+    "example:langgraph:safety-eval": "node --env-file=.env --import tsx examples/langgraph-router/src/safety-eval.ts --live",
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",
     "clean": "pnpm --recursive --if-present clean",
     "format": "biome format --write .",

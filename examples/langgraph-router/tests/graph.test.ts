@@ -28,4 +28,37 @@ describe("runnable LangGraph example", () => {
     });
     expect(result.selectedRoute).toBe("human");
   });
+
+  it("uses the supplied workflow route descriptions and records the fallback decision", async () => {
+    const routeMap = {
+      answer: "Explain a local FAQ",
+      search: "Retrieve account records",
+      calculate: "Perform arithmetic",
+      human: "Request approval before a cancellation",
+    };
+    const evaluate = vi.fn(async () => ({
+      route: "search" as Route,
+      probability: 0.7,
+      confidence: 0.9,
+    }));
+    const onDecision = vi.fn();
+    const result = await createDemoGraph({
+      evaluator: { evaluate },
+      routeMap,
+      onDecision,
+    }).invoke({ message: "Cancel my order" });
+    expect(evaluate).toHaveBeenCalledWith({
+      state: "Cancel my order",
+      routes: routeMap,
+      signal: expect.any(AbortSignal),
+    });
+    expect(onDecision).toHaveBeenCalledWith(
+      expect.objectContaining({
+        route: "human",
+        evaluatedRoute: "search",
+        reason: "low-probability",
+      }),
+    );
+    expect(result.selectedRoute).toBe("human");
+  });
 });

@@ -35,6 +35,7 @@ export function createDemoGraph(
   options: {
     readonly evaluator?: DecisionEvaluator<string, Route>;
     readonly onDecision?: (decision: RouteDecision<Route>) => void;
+    readonly routeMap?: Readonly<Record<Route, string>>;
   } = {},
 ) {
   const GraphState = Annotation.Root({
@@ -44,7 +45,7 @@ export function createDemoGraph(
     output: Annotation<string>,
   });
   const route = createJevRouter({
-    routes,
+    routes: options.routeMap ?? routes,
     selectState: (state: DemoState) => state.message,
     fallback: "human",
     minimumProbability: 0.8,
