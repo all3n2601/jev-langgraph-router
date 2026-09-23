@@ -18,6 +18,7 @@
     "dataset:bitext:agents:run-a": "node --import tsx benchmarks/src/bitext-agent-cli.ts run-a",
     "dataset:bitext:agents:run-b": "node --import tsx benchmarks/src/bitext-agent-cli.ts run-b",
     "dataset:bitext:agents:merge": "node --import tsx benchmarks/src/bitext-agent-cli.ts merge",
+    "dataset:bitext:agents:provisional": "node --import tsx benchmarks/src/bitext-agent-cli.ts provisional",
     "example:langgraph": "pnpm --filter jev-langgraph-example demo",
     "example:langgraph:live": "node --env-file=.env --import tsx examples/langgraph-router/src/cli.ts --live",
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",

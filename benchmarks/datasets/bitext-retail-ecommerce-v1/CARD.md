@@ -92,3 +92,13 @@ covering disagreements, uncertainty, and every proposed human route. It **does n
 Claude-to-Claude agreement is not routing accuracy. Human review is still necessary,
 especially for safety cases. Keep the locally generated packets and labels out of the
 public software repository unless their dataset-license obligations are handled separately.
+
+If a person adjudicates **all** agent disagreements in the ignored local
+`user-adjudications.json` (an object with a `labels` array of `{ "id", "label" }` records),
+`pnpm dataset:bitext:agents:provisional` creates a separate, ignored
+`provisional-cases.jsonl`. This research-only set uses the person's choices for
+disagreements and two-agent consensus elsewhere. It also produces per-case label
+provenance, a manifest, and `remaining-review.jsonl` for agreed human routes and
+uncertain cases. It never changes the original reviews or produces the human-validated
+`cases.jsonl`. Any comparison against it measures agreement with **provisional AI-assisted
+labels**, not accuracy against ground truth. Do not present it as a product-level win.

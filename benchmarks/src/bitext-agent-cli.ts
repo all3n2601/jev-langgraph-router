@@ -10,6 +10,7 @@ import {
   type AgentLabel,
   type BlindCase,
 } from "./bitext-agents.js";
+import { buildProvisionalSet } from "./bitext-provisional.js";
 
 const execFileAsync = promisify(execFile);
 const baseDir = resolve("benchmarks/results/raw/bitext-retail-ecommerce-v1");
@@ -221,13 +222,65 @@ async function merge(): Promise<void> {
   );
 }
 
+async function provisional(): Promise<void> {
+  const reviews = await readJsonl(resolve(baseDir, "review.jsonl"));
+  const packet = await packetFor("a");
+  const ids = packet.map((row) => row.id);
+  const left = validateAgentLabels(await readJsonl(resolve(baseDir, "agent-a/labels.jsonl")), ids);
+  const right = validateAgentLabels(await readJsonl(resolve(baseDir, "agent-b/labels.jsonl")), ids);
+  const adjudicationFile = await readFile(resolve(baseDir, "user-adjudications.json"), "utf8");
+  const adjudicationRecord = JSON.parse(adjudicationFile) as Record<string, unknown>;
+  const result = buildProvisionalSet(reviews, left, right, adjudicationRecord.labels);
+  const outputs = [
+    ["provisional-cases.jsonl", jsonl(result.cases)],
+    ["provisional-provenance.jsonl", jsonl(result.provenance)],
+    ["remaining-review.jsonl", jsonl(result.remainingReview)],
+    [
+      "provisional-manifest.json",
+      `${JSON.stringify(
+        {
+          status: "AI-assisted provisional research set; not human-validated ground truth",
+          source: "Bitext retail/e-commerce review set v1",
+          sourceLicense: "CDLA-Sharing-1.0",
+          adjudications: "Eight user choices on agent disagreements; no rationale supplied",
+          cases: result.cases.length,
+          calibrationCases: result.cases.filter((row) => row.split === "calibration").length,
+          testCases: result.cases.filter((row) => row.split === "test").length,
+          agentAgreement: result.comparison.agreementCount,
+          userAdjudicatedDisagreements: result.comparison.disagreements.length,
+          stillRequiresHumanReview: result.remainingReview.length,
+          warning:
+            "Consensus, including human-route and uncertain cases, is not verified correctness. Do not report this as production accuracy or a human-reviewed benchmark.",
+          casesSha256: sha256(jsonl(result.cases)),
+          provenanceSha256: sha256(jsonl(result.provenance)),
+          adjudicationsSha256: sha256(adjudicationFile),
+        },
+        null,
+        2,
+      )}\n`,
+    ],
+  ] as const;
+  for (const [name, content] of outputs) {
+    await writeFile(resolve(baseDir, name), content, { flag: "wx" });
+  }
+  console.log(
+    JSON.stringify({
+      provisionalCases: result.cases.length,
+      userAdjudicated: result.comparison.disagreements.length,
+      stillRequiresHumanReview: result.remainingReview.length,
+      humanValidated: false,
+    }),
+  );
+}
+
 const command = process.argv[2];
 try {
   if (command === "prepare") await prepare();
   else if (command === "run-a") await run("a");
   else if (command === "run-b") await run("b");
   else if (command === "merge") await merge();
-  else throw new Error("Expected prepare, run-a, run-b, or merge");
+  else if (command === "provisional") await provisional();
+  else throw new Error("Expected prepare, run-a, run-b, merge, or provisional");
 } catch (error) {
   // Model and parser errors can include customer text; keep CLI diagnostics data-free.
   const output =
