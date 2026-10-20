@@ -7,7 +7,7 @@
     "typecheck": "tsc -p tsconfig.json --pretty false"
   },
   "dependencies": {
-    "@langchain/langgraph": "1.4.17",
+    "@langchain/langgraph": "1.5.1",
     "jev-langgraph-router": "workspace:*",
     "jev-router-core": "workspace:*"
   }
